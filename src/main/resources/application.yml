@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: DocumentValidation
+  ai:
+    ollama:
+      base-url: http://127.0.0.1:11434
+      model: gemma2
+      embedding:
+        model: nomic-embed-text  # or another supported embedding model
+
+agent:
+  vectorstore:
+    qdrant:
+      host: cf420cc3-5bb2-446c-8411-bc92ad1aae9e.eu-central-1-0.aws.cloud.qdrant.io
+      port: 6334
+      api-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.BxJuTApTzJaTTSAZb-pkZLtNZJ9Hpfq9QRc7RQxNng4
+      collection-name: vector_store
+      use-tls: true
+      initialize-schema: true
+#    vectorstore:
+#      qdrant:
+#        collection-name: vector_store
+#        host: cf420cc3-5bb2-446c-8411-bc92ad1aae9e.eu-central-1-0.aws.cloud.qdrant.io
+#        port: 6334
+#        use-tls: true
+#        api-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.BxJuTApTzJaTTSAZb-pkZLtNZJ9Hpfq9QRc7RQxNng4  # optional if local
+#        initialize-schema: true  # ✅ important:
+
+
+
+documentvalidationagent:
+  ai:
+    apiUrl: http://127.0.0.1:11434
+    apiKey: aie93JaTv1GW1AP4IIUSqeecV22HgpcQ6WlgWNyfx2HflkY5hTw19JDbT90ViKcZaZ6lpjOo3YIGgpkG7Zb8jEKvdM5Ymnq9jPm79osLppCebwJ7WdWTwWq3Rf15NDxm
+    modelName: gemma2
+    aiType: OLLAMA
+    timeout:
+      inMins: 15
+    temperature: 0.7
+    embeddingModel: nomic-embed-text
+
+logging:
+  level:
+    org.springframework.ai: DEBUG
+    io:
+      qdrant:
+        client: DEBUG
+    dev:
+      langchain4j:
+        store:
+          embedding:
+            qdrant: DEBUG
