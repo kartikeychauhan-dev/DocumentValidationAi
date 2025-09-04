@@ -25,8 +25,6 @@ public class QdrantConfiguration {
     private String apiKey;
     @Value("${agent.vectorstore.qdrant.use-tls}")
     private boolean usetls;
-    @Value("${agent.vectorstore.qdrant.initialize-schema}")
-    private boolean initializeSchema;
     @Value("${agent.vectorstore.qdrant.collection-name}")
     private String collectionName;
 
