@@ -13,7 +13,7 @@ agent:
 
 documentvalidationagent:
   ai:
-    apiUrl: http://20.185.83.16:8080
+    apiUrl: http://localhost:11434
     apiKey: aie93JaTv1GW1AP4IIUSqeecV22HgpcQ6WlgWNyfx2HflkY5hTw19JDbT90ViKcZaZ6lpjOo3YIGgpkG7Zb8jEKvdM5Ymnq9jPm79osLppCebwJ7WdWTwWq3Rf15NDxm
     modelName: gemma2
     aiType: OLLAMA
