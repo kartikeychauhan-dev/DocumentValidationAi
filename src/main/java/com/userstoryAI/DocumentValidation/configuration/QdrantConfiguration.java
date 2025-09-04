@@ -30,10 +30,10 @@ public class QdrantConfiguration {
 	public QdrantClient qdrantClient() {
 		QdrantGrpcClient.Builder grpcClientBuilder =
 				QdrantGrpcClient.newBuilder(
-                        hostname
-						,port
-						,usetls);
-		grpcClientBuilder.withApiKey(apiKey);
+								hostname
+								, port
+								, usetls)
+						.withApiKey(apiKey);
 
 		return new QdrantClient(grpcClientBuilder.build());
 	}
@@ -45,17 +45,9 @@ public class QdrantConfiguration {
 				.port(port)
 				.apiKey(apiKey)
 				.collectionName(collectionName)
-				.useTls(usetls)  // ✅ Enables HTTPS + gRPC over TLS
-//				.initializeSchema(initializeSchema)  // ✅ Automatically creates collection if missing
+				.useTls(usetls)
+				.client(qdrantClient())
 				.build();
 	}
-
-//	@Bean
-//	public VectorStore vectorStore(QdrantClient qdrantClient, EmbeddingModel embeddingModel) {
-//		return QdrantVectorStore.builder(qdrantClient, embeddingModel)
-//				.collectionName(collectionName)
-//				.initializeSchema(initializeSchema)
-//				.build();
-//	}
 
 }

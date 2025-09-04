@@ -27,16 +27,13 @@ public class OllamaChatModelConfiguration extends ChatModelConfiguration {
 				.build();
 	}
 
-	//    @Bean
-	//    public EmbeddingModel embeddingModel() {
-	//        return  new OllamaEmbeddingModel("http://localhost:11434", "nomic-embed-text");
-	//    }
 
 	@Bean
 	public EmbeddingModel embeddingModel() {
 		return OllamaEmbeddingModel.builder()
-				.baseUrl(apiUrl)  // default Ollama port
-				.modelName(embeddingModel)      // or another supported embedding model
+				.baseUrl(apiUrl)
+				.modelName(embeddingModel)
+				.customHeaders(Map.of("Authorization", "Bearer " + apiKey)) //not required for local implemenations
 				.build();
 	}
 }

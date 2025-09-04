@@ -16,7 +16,7 @@ public class DocumentValidationApis {
 
 	@GetMapping("/validate")
 	public ResponseEntity<String> validate() throws FileNotFoundException {
-			validationService.validateContent("test");
-		return ResponseEntity.ok().body("Valid");
+			boolean isValid = validationService.validateContent("test");
+		return ResponseEntity.ok().body("Valid :"+isValid);
 	}
 }
