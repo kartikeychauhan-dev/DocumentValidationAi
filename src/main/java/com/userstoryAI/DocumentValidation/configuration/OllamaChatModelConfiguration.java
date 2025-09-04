@@ -1,15 +1,15 @@
 package com.userstoryAI.DocumentValidation.configuration;
 
-import java.time.Duration;
-import java.util.Map;
-
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
+
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.Duration;
+import java.util.Map;
 
 @Configuration
 //@ConditionalOnProperty(name = "documentvalidationagent.ai.aiType", havingValue = "OLLAMA")
@@ -26,7 +26,6 @@ public class OllamaChatModelConfiguration extends ChatModelConfiguration {
 				.timeout(Duration.ofMinutes(timeout))
 				.build();
 	}
-
 
 	@Bean
 	public EmbeddingModel embeddingModel() {
