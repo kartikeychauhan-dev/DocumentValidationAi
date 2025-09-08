@@ -13,21 +13,17 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.grpc.Collections;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationListener;
 
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 @SpringBootApplication
 public class DocumentValidationApplication implements ApplicationRunner {
@@ -57,20 +53,7 @@ public class DocumentValidationApplication implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         List<String> existingCollections = qdrantClient.listCollectionsAsync().get();
         if (!existingCollections.contains(collectionName)) {
-
-            Collections.CreateCollection createCollection = Collections.CreateCollection.newBuilder()
-                    .setCollectionName(collectionName)
-                    .setVectorsConfig(
-                            Collections.VectorsConfig.newBuilder()
-                                    .setParams(
-                                            Collections.VectorParams.newBuilder()
-                                                    .setSize(1024)
-                                                    .setDistance(Collections.Distance.Cosine)
-                                                    .build()
-                                    )
-                                    .build()
-                    )
-                    .build();
+            Collections.CreateCollection createCollection = getCollectionCreated();
             qdrantClient.createCollectionAsync(createCollection);
             logger.info("Collection : " + collectionName + " created!!");
             URL resource = getClass().getResource("/docs/DORA.pdf");
@@ -78,25 +61,46 @@ public class DocumentValidationApplication implements ApplicationRunner {
             UserMessage userMessage = new UserMessage(extractText.content()+ " summarize with detail regulations in points and don't add any extra text" );
             String response = chatModel.chat(userMessage).aiMessage().text();
             logger.info(response);
-            TextSegment ruleSegment = new TextSegment(
-                    response,
-                    Metadata.from(Map.of(
-                            "ruleType", "semantic",
-                            "description", "Text must be GDPR-related and suitable for a PDF"
-                    ))
-            );
-//            Document document = Document.from(
+//            TextSegment ruleSegment = new TextSegment(
 //                    response,
-//                    Metadata.from(Map.of("doc_name", "dora"))
+//                    Metadata.from(Map.of(
+//                            "ruleType", "semantic",
+//                            "description", "Text must be GDPR-related and suitable for a PDF",
+//                            "documentType", "DORA"
+//                    ))
 //            );
+//            DocumentSplitter splitter = new DocumentByParagraphSplitter(250, 50);
+//            Document document = new Document(List.of(ruleSegment));
+
+            Document document = Document.from(
+                    response,
+                    Metadata.from(Map.of("doc_name", "dora"))
+            );
 //            DocumentSplitter splitter = new DocumentByParagraphSplitter(250, 50);
 //            List<TextSegment> textSegments = splitter.split(document);
 
 //            for (TextSegment textSegment : textSegments) {
-                embeddingStore.add(embeddingModel.embed(ruleSegment).content(),ruleSegment);
+                embeddingStore.add(embeddingModel.embed(document.toTextSegment()).content(), document.toTextSegment());
+//            }
                 logger.info("Rules inserted");
         } else {
             logger.info("Collection : " + collectionName + " already exists!!");
         }
+
+    }
+    public Collections.CreateCollection getCollectionCreated() {
+        return  Collections.CreateCollection.newBuilder()
+                .setCollectionName(collectionName)
+                .setVectorsConfig(
+                        Collections.VectorsConfig.newBuilder()
+                                .setParams(
+                                        Collections.VectorParams.newBuilder()
+                                                .setSize(1024)
+                                                .setDistance(Collections.Distance.Cosine)
+                                                .build()
+                                )
+                                .build()
+                )
+                .build();
     }
 }
